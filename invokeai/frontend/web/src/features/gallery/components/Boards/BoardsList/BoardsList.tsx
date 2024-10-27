@@ -1,3 +1,6 @@
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+import { autoScrollForElements } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/element';
+import { autoScrollForExternal } from '@atlaskit/pragmatic-drag-and-drop-auto-scroll/external';
 import { Button, Collapse, Flex, Icon, Text, useDisclosure } from '@invoke-ai/ui-library';
 import { EMPTY_ARRAY } from 'app/store/constants';
 import { useAppSelector } from 'app/store/storeHooks';
@@ -7,7 +10,7 @@ import {
   selectSelectedBoardId,
 } from 'features/gallery/store/gallerySelectors';
 import { selectAllowPrivateBoards } from 'features/system/store/configSelectors';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PiCaretDownBold } from 'react-icons/pi';
 import { useListAllBoardsQuery } from 'services/api/endpoints/boards';
@@ -22,6 +25,7 @@ type Props = {
 
 export const BoardsList = ({ isPrivate }: Props) => {
   const { t } = useTranslation();
+  const boardsListRef = useRef<HTMLDivElement>(null);
   const selectedBoardId = useAppSelector(selectSelectedBoardId);
   const boardSearchText = useAppSelector(selectBoardSearchText);
   const queryArgs = useAppSelector(selectListBoardsQueryArgs);
@@ -70,6 +74,14 @@ export const BoardsList = ({ isPrivate }: Props) => {
     }
   }, [isPrivate, allowPrivateBoards, t]);
 
+  useEffect(() => {
+    const element = boardsListRef.current;
+    if (!element) {
+      return;
+    }
+    return combine(autoScrollForElements({ element }), autoScrollForExternal({ element }));
+  }, []);
+
   return (
     <Flex direction="column">
       <Flex
@@ -105,7 +117,7 @@ export const BoardsList = ({ isPrivate }: Props) => {
         <AddBoardButton isPrivateBoard={isPrivate} />
       </Flex>
       <Collapse in={isOpen}>
-        <Flex direction="column" gap={1}>
+        <Flex direction="column" gap={1} overflowY="scroll">
           {boardElements.length ? (
             boardElements
           ) : (
