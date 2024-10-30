@@ -2679,6 +2679,8 @@ export type components = {
              * @enum {string}
              */
             type: "clip_embed";
+            /** @default large */
+            variant?: components["schemas"]["ClipVariantType"];
         };
         /** CLIPField */
         CLIPField: {
@@ -3483,6 +3485,12 @@ export type components = {
              */
             deleted: number;
         };
+        /**
+         * ClipVariantType
+         * @description Variant type.
+         * @enum {string}
+         */
+        ClipVariantType: "large" | "gigantic";
         /**
          * CollectInvocation
          * @description Collects values into a collection
@@ -14179,7 +14187,7 @@ export type components = {
             /**
              * CFG Scale
              * @description Classifier-Free Guidance scale
-             * @default 7
+             * @default 3.5
              */
             cfg_scale?: number | number[];
             /**
@@ -16212,6 +16220,8 @@ export type components = {
             /** Path Or Prefix */
             path_or_prefix: string;
             model_type: components["schemas"]["ModelType"];
+            /** Variant */
+            variant?: components["schemas"]["ModelRepoVariant"] | components["schemas"]["ClipVariantType"] | null;
         };
         /**
          * Subtract Integers
